@@ -11,6 +11,7 @@ namespace ORAM
     class OHashBase
     {
     public:
+        virtual ~OHashBase() = default;
         virtual void build(Block<KeyType, BlockSize> *data) = 0;
         virtual Block<KeyType, BlockSize> operator[](KeyType key) = 0;
         virtual std::vector<Block<KeyType, BlockSize>> &data() = 0;
