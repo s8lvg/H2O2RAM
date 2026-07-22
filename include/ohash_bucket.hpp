@@ -129,6 +129,7 @@ namespace ORAM
         const KeyType bucket_num;
         const KeyType bucket_size;
         AESPRF<uint32_t> prf;
+        KeyType dummy_access_ctr = 0;
         std::vector<Block<KeyType, BlockSize>> entries;
 
     public:
@@ -270,6 +271,7 @@ namespace ORAM
         virtual void build(Block<KeyType, BlockSize> *data)
         {
             prf.reset();
+            dummy_access_ctr = 0;
             // allocate n datum to the buckets based on the PRF
             std::vector<std::pair<KeyType, Block<KeyType, BlockSize>>> tmp;
             Block<KeyType, BlockSize> dummy_block;
@@ -312,6 +314,10 @@ namespace ORAM
         {
             Block<KeyType, BlockSize> ret;
             KeyType bucket_id = prf(key);
+            // dummy accesses carry key == -1; without a remap they all hit
+            // prf(-1)'s single fixed bucket and become distinguishable from
+            // real accesses. Send them to a fresh pseudorandom bucket instead.
+            CMOV(key == KeyType(-1), bucket_id, (KeyType)prf(--dummy_access_ctr));
             KeyType st = bucket_id * bucket_size;
             for (KeyType i = 0; i < bucket_size; i++)
             {
