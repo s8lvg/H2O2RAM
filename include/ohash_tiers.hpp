@@ -206,18 +206,17 @@ namespace ORAM
             CMOV(key == KeyType(-1), key, --dummy_access_ctr);
             if (bin_num > 1)
             {
-                auto ret = overflow_bin[key];
-                if (ret.dummy())
-                {
-                    KeyType bin_id = prf(key);
-                    ret = major_bins[bin_id][key];
-                }
-                else
-                {
-                    --dummy_access_ctr;
-                    KeyType bin_id = prf(dummy_access_ctr);
-                    major_bins[bin_id][dummy_access_ctr];
-                }
+                // branchless: always do the overflow lookup and exactly one
+                // major-bin access. If the key was found in overflow, the
+                // major access is a decoy on a fresh dummy key. Selecting via
+                // CMOV avoids a secret-dependent branch on ret.dummy().
+                Block<KeyType, BlockSize> ret = overflow_bin[key];
+                bool hit = !ret.dummy();
+                KeyType mkey = key;
+                CMOV(hit, mkey, --dummy_access_ctr);
+                KeyType bin_id = prf(mkey);
+                Block<KeyType, BlockSize> r_major = major_bins[bin_id][mkey];
+                CMOV(!hit, ret, r_major);
                 return ret;
             }
             else
