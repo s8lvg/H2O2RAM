@@ -7,6 +7,15 @@ project(ORAM
 set(CMAKE_CXX_EXTENSIONS ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+# Use ccache when available. This is a header-only template library, so every
+# translation unit reinstantiates the whole thing at -O3 and touching any
+# header rebuilds all of them.
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+  message("ccache found: ${CCACHE_PROGRAM}")
+  set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
