@@ -241,9 +241,12 @@ namespace ORAM
                 CMOV(res.dummy(), res, cur_res);
                 // res = oblivious_select(res, cur_res, res.dummy());
             }
-            // write back to the buffer
-            // assert(!res.dummy());
-            // CMOV(res.dummy(), res.id, index);
+            // Write back to the buffer. If the index was not present, res is
+            // still the default-constructed dummy, so tag it with the index:
+            // operator[] hands out a writable reference, and without this the
+            // block keeps its dummy id, nothing ever matches it again and the
+            // write through that reference is silently lost.
+            CMOV(res.dummy(), res.id, index);
             _linear_scan_buffer[_buffer_cnt++] = res;
             return *(value_type *)(&(_linear_scan_buffer[_buffer_cnt - 1].value));
         }
