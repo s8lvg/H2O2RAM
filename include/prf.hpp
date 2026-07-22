@@ -16,15 +16,7 @@ public:
     {
         reset();
     }
-
-    // define operator =
-    AESPRF &operator=(const AESPRF &other)
-    {
-        if (this != &other)
-            range = other.range;
-        return *this;
-    }
-
+    
     void reset()
     {
         uint8_t aes_key[AES_BLOCK_SIZE];
