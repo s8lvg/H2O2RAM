@@ -5,7 +5,13 @@
 #include <concepts>
 #include <cstring>
 
+// Overridable so a translation unit can preallocate an ORAM to a fixed
+// capacity. ObliviousRAM only ever sizes itself to max(_size, MIN_CAPACITY),
+// and passing a non-zero _size also fills every block with junk, so this is
+// the only way to get a preallocated but empty structure.
+#ifndef MIN_CAPACITY
 #define MIN_CAPACITY 65536
+#endif
 
 #define osorter stateless_osorter
 #define CONFIG_FILE "hash_map.bin"

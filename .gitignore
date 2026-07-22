@@ -28,3 +28,7 @@ failure_prob
 *.raw
 meta-data
 *.log
+target/
+Cargo.lock
+hash_map.bin*
+hash_time.bin*
