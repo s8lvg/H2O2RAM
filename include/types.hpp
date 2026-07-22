@@ -15,7 +15,6 @@
 #define EPSILON_INV 8
 #define MAJOR_BIN_SIZE (EPSILON_INV * EPSILON_INV * 1024)
 #define OVERFLOW_PILE_BIN_SIZE 512
-// #define LINEAR_SCAN_THRESHOLD 256 // large block size
 #define LINEAR_SCAN_THRESHOLD 128 // small block size
 #define SMALL_HASH_TABLE_THRESHOLD LINEAR_SCAN_THRESHOLD
 #define DELTA_INV_LOG2 64
@@ -53,16 +52,6 @@ namespace ORAM
             // check if the msb is 1
             return id & (1ll << (sizeof(KeyType) * 8 - 1));
         }
-
-        // Template function to get the value as a basic type
-        // template <typename T>
-        //     requires(sizeof(T) == sizeof(value))
-        // explicit operator T() const
-        // {
-        //     T output;
-        //     std::memcpy(&output, value, sizeof(T));
-        //     return output;
-        // }
 
         // Template function to get the value as a basic type
         template <typename T>

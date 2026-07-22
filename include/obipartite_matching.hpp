@@ -5,6 +5,7 @@
 #include <mutex>
 #include <random>
 #include <vector>
+#include <cassert>
 #include <execution>
 #include "osort.hpp"
 using namespace std;

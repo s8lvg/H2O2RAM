@@ -32,8 +32,6 @@ namespace ORAM
         iterator _end;
         mutable std::vector<ObliviousBin<size_type, sizeof(ValueType) + sizeof(size_type)>>
             hash_tables;
-        // mutable std::vector<OTwoTierHash<size_type, sizeof(ValueType) + sizeof(size_type)>>
-        //     hash_tables;
         mutable std::vector<BlockType> _linear_scan_buffer;
         mutable IndexType _dummy_ctr;
         mutable size_type _buffer_cnt;
@@ -166,7 +164,6 @@ namespace ORAM
             _capacity = linear_scan_threshold;
             while (_capacity < std::max(_size, (size_type)MIN_CAPACITY))
             {
-                // std::cout << "capacity: " << _capacity << ", memory usage: " << getMemoryUsage() << " KB" << std::endl;
                 hash_tables.emplace_back(_capacity, _capacity, delta_inv_log2);
                 if (hash_tables.back().is_linear_scan())
                 {
@@ -175,13 +172,10 @@ namespace ORAM
                 }
                 _capacity <<= 1;
             }
-            // std::cout << "total: " << _capacity * sizeof(*first) / 1024 << " KB, memory usage: " << getMemoryUsage() << " KB" << ", ratio: " << 1.0 * getMemoryUsage() / _capacity / sizeof(*first) * 1024 << std::endl;
             this->linear_scan_threshold <<= 1;
             hash_tables.emplace_back(_capacity, _capacity, delta_inv_log2);
             _linear_scan_buffer.resize(this->linear_scan_threshold);
-            // std::cout << "linear_scan_threshold: " << this->linear_scan_threshold << std::endl;
             BlockType *blocks = new BlockType[_capacity];
-            // std::cout << "after new total: " << _capacity * sizeof(*first) / 1024 << " KB, memory usage: " << getMemoryUsage() << " KB" << ", ratio: " << 1.0 * getMemoryUsage() / _capacity / sizeof(*first) * 1024 << std::endl;
             if (_size > 2048)
                 std::transform(std::execution::par_unseq, first, last, blocks,
                                [first](const ValueType &v)
@@ -200,7 +194,6 @@ namespace ORAM
                               { b.id = &b - blocks; });
 
             hash_tables.back().build(blocks);
-            // std::cout << "after build total: " << _capacity * sizeof(*first) / 1024 << " KB, memory usage: " << getMemoryUsage() << " KB" << ", ratio: " << 1.0 * getMemoryUsage() / _capacity / sizeof(*first) * 1024 << std::endl;
             delete[] blocks;
         }
 
@@ -326,12 +319,6 @@ namespace ORAM
         {
             if (_size == 0)
                 return;
-            // throw std::out_of_range("pop_back on empty container");
-            // if (_size == _capacity >> 1)
-            // {
-            //     _capacity >>= 1;
-            //     hash_tables.pop_back();
-            // }
             _size--;
             _end = iterator(this, _size);
         }

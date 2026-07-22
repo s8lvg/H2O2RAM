@@ -273,10 +273,12 @@ namespace ORAM
             for (KeyType i = 1; i < tmp.size(); i++)
             {
                 ++cnt;
-                CMOV(tmp[i].first == prev_first, cnt, KeyType(1));
-                // cnt = oblivious_select(KeyType(1),
-                //                        cnt + 1,
-                //                        tmp[i].first == prev_first);
+                // Reset the run length when the bin id CHANGES. The condition
+                // was inverted, which corrupted cnt and made the group_size
+                // cut-off below tag the wrong entries with the bin_num
+                // sentinel, dropping overflow blocks. Cf. the equivalent loop
+                // in OHashBucket::build, which uses !=.
+                CMOV(tmp[i].first != prev_first, cnt, KeyType(1));
                 prev_first = tmp[i].first;
                 CMOV(cnt > group_size, tmp[i].first, bin_num);
             }
