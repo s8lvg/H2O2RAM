@@ -1,5 +1,4 @@
 #pragma once
-#include <map>
 #include <memory>
 #include <vector>
 #include "ocompact.hpp"
@@ -35,11 +34,7 @@ namespace ORAM
             hash_tables;
         // mutable std::vector<OTwoTierHash<size_type, sizeof(ValueType) + sizeof(size_type)>>
         //     hash_tables;
-#if !CACHE_OBLIVIOUS
         mutable std::vector<BlockType> _linear_scan_buffer;
-#else
-        mutable std::map<IndexType, BlockType> _linear_scan_buffer;
-#endif
         mutable IndexType _dummy_ctr;
         mutable size_type _buffer_cnt;
         mutable std::mt19937 gen;
@@ -71,17 +66,8 @@ namespace ORAM
                 [[unlikely]]
             {
                 // Timer t;
-#if !CACHE_OBLIVIOUS
                 std::vector<BlockType> extracted_data(_linear_scan_buffer.begin(),
                                                       _linear_scan_buffer.end());
-#else
-                assert(_linear_scan_buffer.size() == linear_scan_threshold);
-                std::vector<BlockType> extracted_data;
-                for (auto &p : _linear_scan_buffer)
-                    extracted_data.emplace_back(p.second);
-                _linear_scan_buffer.clear();
-                _dummy_ctr = 0;
-#endif
                 uint32_t L = 0;
                 for (; L < hash_tables.size() && !hash_tables[L].empty(); L++)
                     ;
@@ -260,7 +246,6 @@ namespace ORAM
         {
             clear_buffer_if_full();
             BlockType res;
-#if !CACHE_OBLIVIOUS
             // scan the buffer
             for (size_t i = 0; i < _buffer_cnt; i++)
             {
@@ -268,19 +253,6 @@ namespace ORAM
                 CMOV(_.id == index, res, _);
                 CMOV(_.id == index, _.id, IndexType(-1));
             }
-#else
-            auto it = _linear_scan_buffer.find(index);
-            if (it == _linear_scan_buffer.end())
-            {
-                res = BlockType();
-            }
-            else
-            {
-                auto &_ = it->second;
-                res = _;
-                _.id = IndexType(-1);
-            }
-#endif
             for (auto &table : hash_tables)
             {
                 // adv knows it
@@ -294,26 +266,10 @@ namespace ORAM
                 // res = oblivious_select(res, cur_res, res.dummy());
             }
             // write back to the buffer
-#if !CACHE_OBLIVIOUS
             // assert(!res.dummy());
             // CMOV(res.dummy(), res.id, index);
             _linear_scan_buffer[_buffer_cnt++] = res;
             return *(value_type *)(&(_linear_scan_buffer[_buffer_cnt - 1].value));
-#else
-            _buffer_cnt++;
-            // it = _linear_scan_buffer.find(index);
-            if (it != _linear_scan_buffer.end() || index == IndexType(-1))
-            {
-                it->second = std::move(res);
-                _linear_scan_buffer[--_dummy_ctr];
-                return *(value_type *)(&it->second.value);
-            }
-            else
-            {
-                _linear_scan_buffer[index] = std::move(res);
-                return *(value_type *)(&(_linear_scan_buffer[index].value));
-            }
-#endif
         }
 
         ObliviousRAM &operator=(const ObliviousRAM &other)

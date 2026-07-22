@@ -245,12 +245,6 @@ namespace ORAM
     {
         if (n <= 1)
             return;
-#if PAGE_LEVEL_OBLIVIOUS
-        uintptr_t addr1 = reinterpret_cast<uintptr_t>(&*data);
-        uintptr_t addr2 = reinterpret_cast<uintptr_t>(&*(data + n)) - 1;
-        if ((addr1 / PAGE_SIZE) == (addr2 / PAGE_SIZE))
-            return;
-#endif
         // assert(std::has_single_bit(n));
         const size_t k = (n >> 1) + (n & 1);
         const size_t lg2 = std::floor(std::log2(n));
@@ -258,11 +252,6 @@ namespace ORAM
         // Apply input-layer switches to perm
         if (n > 2)
         {
-#if PAGE_LEVEL_OBLIVIOUS
-            addr2 = reinterpret_cast<uintptr_t>(&*(data + k - 1)) - 1;
-            if ((addr1 / PAGE_SIZE) != (addr2 / PAGE_SIZE))
-            {
-#endif
                 // if (n >= 1024)
                 //     std::for_each(std::execution::par_unseq,
                 //                   data,
@@ -281,9 +270,6 @@ namespace ORAM
                     // for (size_t i = 0; i < k - 1; i++)
                     //     if (C[i + C_offset])
                     //         std::swap(data[i], data[k + i]);
-#if PAGE_LEVEL_OBLIVIOUS
-            }
-#endif
             // Apply top and bottom subnetworks
             // apply_perm(C, data, k, C_offset + k);
             // apply_perm(C, data + k, n - k, C_offset + k + C_top_len);
@@ -299,11 +285,6 @@ namespace ORAM
                 apply_perm(C, data + k, n - k, C_offset + k + C_top_len);
             }
         }
-#if PAGE_LEVEL_OBLIVIOUS
-        addr2 = reinterpret_cast<uintptr_t>(&*(data + n - k)) - 1;
-        if ((addr1 / PAGE_SIZE) != (addr2 / PAGE_SIZE))
-        {
-#endif
             // if (n >= 1024)
             //     std::for_each(std::execution::par_unseq,
             //                   data,
@@ -322,10 +303,6 @@ namespace ORAM
                 // for (size_t i = 0; i < n - k; i++)
                 //     if (C[i + C_offset + C_top_len * 2])
                 //         std::swap(data[i], data[k + i]);
-
-#if PAGE_LEVEL_OBLIVIOUS
-        }
-#endif
     }
 
     template <std::unsigned_integral T = uint32_t>

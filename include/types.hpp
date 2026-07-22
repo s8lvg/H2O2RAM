@@ -5,14 +5,6 @@
 #include <concepts>
 #include <cstring>
 
-#ifndef CACHE_OBLIVIOUS
-#define CACHE_OBLIVIOUS 0
-#endif
-
-#ifndef PAGE_LEVEL_OBLIVIOUS
-#define PAGE_LEVEL_OBLIVIOUS 0
-#endif
-
 #define MIN_CAPACITY 65536
 
 #define osorter stateless_osorter
@@ -32,7 +24,6 @@
 namespace ORAM
 {
     using Byte = uint8_t;
-    const size_t PAGE_SIZE = sysconf(_SC_PAGESIZE);
 
     template <std::integral KeyType, std::size_t BlockSize = sizeof(KeyType)>
         requires(BlockSize >= sizeof(KeyType) && std::is_standard_layout_v<KeyType>)

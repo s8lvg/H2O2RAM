@@ -39,7 +39,6 @@ void benchmark_ohahsbin();
 void benchmark_omap()
 // int main(int argc, char **argv)
 {
-    std::cout << "CACHE: " << CACHE_OBLIVIOUS << ", PAGE: " << PAGE_LEVEL_OBLIVIOUS << std::endl;
     std::random_device rd;
     std::mt19937 gen(rd());
     int test_cases = 1;
@@ -104,7 +103,6 @@ void benchmark_pq()
     // std::cout << "CMOV: " << t1 << "s" << std::endl;
     // std::cout << "oblivious_select: " << t2 << "s" << std::endl;
 
-    std::cout << "CACHE: " << CACHE_OBLIVIOUS << ", PAGE: " << PAGE_LEVEL_OBLIVIOUS << std::endl;
     std::random_device rd;
     std::mt19937 gen(rd());
     int test_cases = 1;
