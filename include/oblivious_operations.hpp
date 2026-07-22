@@ -202,9 +202,40 @@ namespace ORAM
     template <typename T>
     inline void CMOV(const bool cond, T &val1, const T &val2)
     {
-        if (cond)
+        // constant-time conditional move: touch every byte regardless of cond
+        constexpr size_t n = sizeof(T);
+        unsigned char *p1 = reinterpret_cast<unsigned char *>(&val1);
+        const unsigned char *p2 = reinterpret_cast<const unsigned char *>(&val2);
+        size_t i = 0;
+        for (; i + 8 <= n; i += 8)
         {
-            val1 = val2;
+            uint64_t a, b;
+            std::memcpy(&a, p1 + i, 8);
+            std::memcpy(&b, p2 + i, 8);
+            CMOV8(cond, a, b);
+            std::memcpy(p1 + i, &a, 8);
+        }
+        for (; i + 4 <= n; i += 4)
+        {
+            uint32_t a, b;
+            std::memcpy(&a, p1 + i, 4);
+            std::memcpy(&b, p2 + i, 4);
+            CMOV4(cond, a, b);
+            std::memcpy(p1 + i, &a, 4);
+        }
+        for (; i + 2 <= n; i += 2)
+        {
+            uint16_t a, b;
+            std::memcpy(&a, p1 + i, 2);
+            std::memcpy(&b, p2 + i, 2);
+            CMOV2(cond, a, b);
+            std::memcpy(p1 + i, &a, 2);
+        }
+        for (; i < n; ++i)
+        {
+            uint8_t a = p1[i], b = p2[i];
+            CMOV1(cond, a, b);
+            p1[i] = a;
         }
     }
 
