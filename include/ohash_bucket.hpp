@@ -80,45 +80,8 @@ namespace ORAM
         return right;
     }
 
-    static double osort_time_complexity(size_t n)
-    {
-        // get available threads
-        return n / 4.0 * log2(n) * (log2(n) + 1);
-    }
 
-    // Numerical differentiation for the gradient approximation
-    static double numerical_derivative(std::function<double(double)> func, double x, double h = 1)
-    {
-        return (func(x + h) - func(x - h)) / (2 * h);
-    }
 
-    static double objective_function(unsigned _, const double *x, double *grad, void *my_func_data)
-    {
-        int k = static_cast<int>(std::round(x[0]));
-        size_t n = ((size_t *)my_func_data)[0];
-        size_t op_num = ((size_t *)my_func_data)[1];
-        size_t delta_inv_log2 = ((size_t *)my_func_data)[2];
-        int lnk = compute_bucket_size(n, k, delta_inv_log2);
-
-        // Compute the function value
-        double result = 2 * osort_time_complexity(k * lnk + n) + 2 * (k + op_num) * lnk + osort_time_complexity(k * lnk);
-
-        // Compute the gradient if required
-        if (grad)
-        {
-            auto func = [&](double k_val) -> double
-            {
-                int k_int = static_cast<int>(std::round(k_val));
-                int lnk_val = compute_bucket_size(n, k_int, delta_inv_log2);
-                return 2 * osort_time_complexity(k_int * lnk_val + n) + 2 * (k_int + op_num) * lnk_val + osort_time_complexity(k_int * lnk_val);
-            };
-
-            // Numerical differentiation
-            grad[0] = numerical_derivative(func, x[0]);
-        }
-
-        return result;
-    }
 
     template <std::integral KeyType,
               std::size_t BlockSize = sizeof(KeyType)>

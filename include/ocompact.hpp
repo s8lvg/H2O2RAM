@@ -533,27 +533,6 @@ namespace ORAM
                                                  depth % 2 == 0 && budget > 1 ? budget - 1 : budget);
     }
 
-    // 1s first
-    template <std::random_access_iterator DataIt,
-              std::random_access_iterator FlagIt>
-    void ocompact_by_half_exp(DataIt data_first,
-                              FlagIt flag_first,
-                              size_t n,
-                              size_t Z = OCOMPACT_Z)
-    {
-        assert(std::has_single_bit(n));
-        assert(std::has_single_bit(Z));
-        omp_set_num_threads(omp_get_max_threads());
-        if (n < (size_t)std::numeric_limits<int32_t>::max())
-            _ocompact_by_half_rand_exp<DataIt, FlagIt,
-                                       uint32_t>(
-                data_first, flag_first, (uint32_t)n, Z, 0, std::log2(Z));
-        else
-            _ocompact_by_half_rand_exp<DataIt, FlagIt,
-                                       size_t>(
-                data_first, flag_first, n, Z, 0, std::log2(Z));
-    }
-
     template <std::random_access_iterator DataIt1,
               std::random_access_iterator DataIt2,
               std::random_access_iterator FlagIt1,

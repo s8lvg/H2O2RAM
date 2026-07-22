@@ -95,27 +95,3 @@ ORAM::ObliviousRAM<uint32_t, int> shortest_path(const ORAM::ObliviousRAM<uint32_
     }
     return dist;
 }
-
-std::vector<int> dijkstra(const std::vector<std::vector<int>> &graph, int source)
-{
-    int n = graph.size();
-    std::vector<int> dist(n, -1);
-    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
-    dist[source] = 0;
-    pq.push({0, source});
-    while (!pq.empty())
-    {
-        int u = pq.top().second;
-        assert(dist[u] == pq.top().first);
-        pq.pop();
-        for (auto v : graph[u])
-        {
-            if (dist[v] == -1 || dist[v] > dist[u] + 1)
-            {
-                dist[v] = dist[u] + 1;
-                pq.push({dist[v], v});
-            }
-        }
-    }
-    return dist;
-}

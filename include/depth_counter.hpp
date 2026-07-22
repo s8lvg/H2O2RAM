@@ -21,9 +21,4 @@ public:
     {
         --depth;
     }
-
-    int get_depth() const
-    {
-        return depth;
-    }
 };

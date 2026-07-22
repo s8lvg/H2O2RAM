@@ -42,23 +42,6 @@ namespace ORAM
         size_type linear_scan_threshold;
         size_type delta_inv_log2;
 
-        std::vector<uint8_t> generate_flags(size_t n) const
-        {
-            // generate n/2 0 and n/2 1
-            std::vector<uint8_t> flags(n);
-            size_t x = n / 2;
-            size_t y = n / 2;
-            for (size_t i = 0; i < n; i++)
-            {
-                // generate 1 with p = y/(x+y)
-                double p = static_cast<double>(y) / (x + y);
-                std::bernoulli_distribution dist(p);
-                flags[i] = dist(gen);
-                y = oblivious_select(y, y - 1, flags[i]);
-                x = oblivious_select(x, x - 1, !flags[i]);
-            }
-            return flags;
-        }
 
         void clear_buffer_if_full() const
         {
@@ -338,12 +321,6 @@ namespace ORAM
             }
         }
 
-        // front
-        const_reference front() const
-        {
-            return operator[](0);
-        }
-
         // pop_back
         void pop_back()
         {
@@ -372,26 +349,6 @@ namespace ORAM
         iterator end()
         {
             return _end;
-        }
-
-        const_iterator cbegin() const
-        {
-            return _begin;
-        }
-
-        const_iterator cend() const
-        {
-            return _end;
-        }
-
-        reverse_iterator rbegin()
-        {
-            return reverse_iterator(_size - 1);
-        }
-
-        reverse_iterator rend()
-        {
-            return reverse_iterator(-1);
         }
 
         /**
@@ -423,11 +380,6 @@ namespace ORAM
             std::swap(gen, other.gen);
             std::swap(linear_scan_threshold, other.linear_scan_threshold);
             std::swap(delta_inv_log2, other.delta_inv_log2);
-        }
-
-        size_type maxsize() const
-        {
-            return std::numeric_limits<size_type>::max();
         }
 
         size_type size() const
