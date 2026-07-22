@@ -27,7 +27,6 @@ void add_edge(std::vector<Edge> &edges, // ORAM::ObliviousRAM<uint32_t, Edge> &e
               int source, int to, int weight, int idx)
 {
     // assume edges has been initialized
-    // std::cout << "add " << source << " " << to << " " << idx << std::endl;
     assert(edges.size() > idx);
     auto &e = edges[idx];
     auto &h = head[source];
@@ -42,7 +41,6 @@ void add_edge(ORAM::ObliviousRAM<uint32_t, Edge> &edges,
               int source, int to, int idx)
 {
     // assume edges has been initialized
-    // std::cout << "add " << source << " " << to << " " << idx << std::endl;
     assert(edges.size() > idx);
     auto &e = edges[idx];
     auto &h = head[source];

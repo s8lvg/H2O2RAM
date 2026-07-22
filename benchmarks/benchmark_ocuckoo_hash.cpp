@@ -40,7 +40,6 @@ BENCHMARK_DEFINE_F(OHashCuckoo256, OCuckooHash)
 
 static void CustomizedArgsN(benchmark::internal::Benchmark *b)
 {
-    size_t step = 1;
     for (size_t n = 3; n <= 18; n++)
     {
         size_t N = 1 << n;

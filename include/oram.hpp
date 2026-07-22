@@ -46,7 +46,6 @@ namespace ORAM
             if (_buffer_cnt == linear_scan_threshold)
                 [[unlikely]]
             {
-                // Timer t;
                 std::vector<BlockType> extracted_data(_linear_scan_buffer.begin(),
                                                       _linear_scan_buffer.end());
                 uint32_t L = 0;
@@ -389,8 +388,8 @@ namespace std
     // swap(a, b)
     template <std::unsigned_integral IndexType,
               typename ValueType>
-    inline void std::swap(ORAM::ObliviousRAM<IndexType, ValueType> &a,
-                          ORAM::ObliviousRAM<IndexType, ValueType> &b)
+    inline void swap(ORAM::ObliviousRAM<IndexType, ValueType> &a,
+                     ORAM::ObliviousRAM<IndexType, ValueType> &b)
     {
         a.swap(b);
     }

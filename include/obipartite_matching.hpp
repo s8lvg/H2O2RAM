@@ -46,15 +46,8 @@ namespace ORAM
     {
         bool operator()(const BiEdge<T> &a, const BiEdge<T> &b) const
         {
-            // if (a.u != b.u)
-            //     return a.u < b.u;
             // directs to left first
-            // if (a.dir != b.dir)
-            //     return a.dir == 0;
             // // flag equals to REVERSABLE first
-            // if (a.flag != b.flag)
-            //     return a.flag == REVERSABLE;
-            // return a.ctr < b.ctr;
             bool cond1 = a.dir != b.dir;
             bool ret1 = a.dir == 0;
             bool cond2 = a.flag != b.flag;
@@ -69,11 +62,6 @@ namespace ORAM
     {
         bool operator()(const BiEdge<T> &a, const BiEdge<T> &b) const
         {
-            // if (a.v != b.v)
-            //     return a.v < b.v;
-            // if (a.dir != b.dir)
-            //     return a.dir == 0;
-            // return a.ctr > b.ctr;
             bool cond1 = a.v != b.v;
             bool ret1 = a.v < b.v;
             bool cond2 = a.dir != b.dir;
@@ -203,7 +191,6 @@ namespace ORAM
                 }
         }
         // if (matches != left_cnt)
-        //     std::cerr << "Warning: " << matches << " matches out of " << left_cnt << std::endl;
         assert(matches == left_cnt);
         // delete edges_by_bucket
         for (T i = 0; i < k; i++)

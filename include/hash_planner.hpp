@@ -65,7 +65,6 @@ namespace ORAM
                 file >> b >> c;
                 std::string type;
                 file >> type;
-                // std::cout << a << " " << b << " " << c << " " << type << std::endl;
                 if (type == "linear")
                     hash_map[{a, b, c}] = {type, 0, 0};
                 else if (type == "bucket")
@@ -86,7 +85,6 @@ namespace ORAM
                 else
                     std::cerr << "unknown type: " << type << std::endl;
             }
-            // std::cout << "hash_map size: " << hash_map.size() << std::endl;
             return hash_map;
         }();
         if (n == 0)

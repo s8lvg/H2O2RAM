@@ -49,7 +49,6 @@ int main(int argc, char **argv)
         std::shuffle(data.begin(), data.end(), gen);
         std::cout << "Preprocessing: " << t.get_interval_time() << " s" << std::endl;
         ORAM::ObliviousRAM<uint32_t, ORAM::Block<uint32_t, B>> oram(data.begin(), data.end());
-        auto max_mem_usage = getMemoryUsage();
         std::cout << "total: " << n * sizeof(oram[0]) / 1024 << " KB, memory usage: " << getMemoryUsage() << " KB" << ", ratio: " << 1.0 * getMemoryUsage() / n / sizeof(data[0]) * 1024 << std::endl;
         std::cout << "Init: " << t.get_interval_time() << " s" << std::endl;
         // ProfilerStart("test_capture.prof");

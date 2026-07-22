@@ -120,7 +120,6 @@ namespace ORAM
                 return left;
             }();
             KeyType step = std::pow(n, 0.5);
-            double lr = 0.01;
             double min_time = std::numeric_limits<double>::max();
             KeyType ret_bucket_size;
             KeyType ret_bucket_num;
@@ -133,7 +132,6 @@ namespace ORAM
             auto compute_time = [&](KeyType bucket_num)
             {
                 KeyType bucket_size = compute_bucket_size(n, bucket_num, delta_inv_log2);
-                // std::cout << "n: " << n << ", bucket_num: " << bucket_num << ", bucket_size: " << bucket_size << std::endl;
                 double total_time = 0;
                 constexpr int T = 3;
                 for (int _ = 0; _ < T; _++)
@@ -163,9 +161,6 @@ namespace ORAM
             x2_time = compute_time(bucket_x2);
             while (bucket_num_l + step < bucket_num_r)
             {
-                // std::cout << "\tl: " << bucket_num_l << ", x1: " << bucket_x1 << ", time: " << x1_time
-                //           << ", x2: " << bucket_x2 << ", time: " << x2_time << ", r: " << bucket_num_r
-                //           << std::endl;
                 if (x1_time < x2_time)
                 {
                     bucket_num_r = bucket_x2;
@@ -185,16 +180,11 @@ namespace ORAM
                     x2_time = compute_time(bucket_x2);
                 }
             }
-            // std::cout << "\tl: " << bucket_num_l << ", x1: " << bucket_x1 << ", time: " << x1_time
-            //           << ", x2: " << bucket_x2 << ", time: " << x2_time << ", r: " << bucket_num_r
-            //           << std::endl
-            //           << std::endl;
             ret_bucket_num = (bucket_num_l + bucket_num_r) / 2;
             ret_bucket_size = compute_bucket_size(n, ret_bucket_num, delta_inv_log2);
             min_time = (x1_time + x2_time) / 2;
             // bucket_num_l = ret_bucket_num < 100 ? 2 : ret_bucket_num - 100;
             // bucket_num_r = ret_bucket_num + 100;
-            // // std::cout << "\tret_bucket_num: " << ret_bucket_num << " ret_bucket_size: " << ret_bucket_size << ", time: " << min_time << std::endl;
             // for (KeyType bucket_num = bucket_num_l; bucket_num < bucket_num_r; bucket_num++)
             // {
             //     if (bucket_num <= 2)
@@ -205,7 +195,6 @@ namespace ORAM
             //     auto cur_time = compute_time(bucket_num);
             //     if (cur_time < min_time)
             //     {
-            //         std::cout << "\tbucket_num: " << bucket_num << " time: " << cur_time << std::endl;
             //         min_time = cur_time;
             //         ret_bucket_num = bucket_num;
             //         ret_bucket_size = bucket_size;

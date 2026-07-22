@@ -116,14 +116,11 @@ namespace ORAM
                            delta_inv_log2),
               gen(std::random_device{}())
         {
-            // std::cout << "bin_size: " << bin_size << std::endl
-            //           << std::endl;
             assert(std::has_single_bit(n));
         }
 
         virtual void build(Block<KeyType, BlockSize> *data)
         {
-            // Timer t;
             // for small hash tables with only one bin,
             // we can directly build the cuckoo hash table
             dummy_access_ctr = 0;
@@ -147,7 +144,6 @@ namespace ORAM
                     [data, shuffle_key_st](const auto &a, const auto &b)
                     {bool ret = shuffle_key_st[&a - data] < shuffle_key_st[&b - data];
                     return ret; });
-            // std::cout << "building hash table with " << n << " entries" << std::endl;
             this->prf.reset();
             std::uniform_int_distribution<uint32_t> dist(0, this->bin_num - 1);
             std::vector<Block<KeyType, BlockSize>> buffer(KeyType(2) * n);
@@ -238,7 +234,6 @@ namespace ORAM
                 extracted_data = major_bins[0].extract();
                 return extracted_data;
             }
-            // Timer t;
             std::vector<std::pair<KeyType, Block<KeyType, BlockSize>>> tmp;
             Block<KeyType, BlockSize> dummy_block;
             auto &data = overflow_bin.extract();
@@ -253,21 +248,14 @@ namespace ORAM
             for (KeyType i = 0; i < bin_num; i++)
                 for (KeyType j = 0; j < group_size; j++)
                     tmp.emplace_back(i, dummy_block);
-            // std::cout << "Time for constructing tmp: " << t.get_interval_time() << std::endl;
             osorter(tmp.data(), tmp.size(), [](const auto &a, const auto &b)
                     {
-                        // if(a.first!=b.first)
-                        //         return a.first < b.first; 
-                        // if(a.second.dummy()!=b.second.dummy())
-                        //     return !a.second.dummy();
-                        // return a.second.id < b.second.id; 
                         bool cond1= a.first != b.first;
                         bool ret1 = a.first < b.first;
                         bool cond2 = a.second.dummy() != b.second.dummy();
                         bool ret2 = !a.second.dummy();
                         bool ret3 = a.second.id < b.second.id;
                         return (cond1 & ret1) | (!cond1 & ((cond2 & ret2) | (!cond2 & ret3))); });
-            // std::cout << "Time for osorting tmp: " << t.get_interval_time() << std::endl;
             KeyType cnt = 1;
             KeyType prev_first = tmp[0].first;
             for (KeyType i = 1; i < tmp.size(); i++)
@@ -282,7 +270,6 @@ namespace ORAM
                 prev_first = tmp[i].first;
                 CMOV(cnt > group_size, tmp[i].first, bin_num);
             }
-            // std::cout << "Time for reassigning bin ids: " << t.get_interval_time() << std::endl;
             osorter(tmp.data(), tmp.size(), [](const auto &a, const auto &b)
                     {
                         bool cond1 = a.first != b.first;
@@ -292,7 +279,6 @@ namespace ORAM
                         bool ret3 = a.second.id < b.second.id;
                         return (cond1 & ret1) | (!cond1 & ((cond2 & ret2) | (!cond2 & ret3))); });
             extracted_data.resize(std::accumulate(bin_loads.begin(), bin_loads.end(), 0));
-            // std::cout << "Time for osorting tmp: " << t.get_interval_time() << std::endl;
 
             std::for_each(std::execution::par_unseq, major_bins.begin(), major_bins.end(), [&](auto &bin)
                           {
@@ -316,8 +302,6 @@ namespace ORAM
                 // Assuming bin_loads is appropriately synchronized for access
                 std::copy(bin_data.begin(), bin_data.begin() + bin_loads[&bin - &major_bins[0]],
                         extracted_data.begin() + std::accumulate(bin_loads.begin(), bin_loads.begin() + (&bin - &major_bins[0]), 0)); });
-            // std::cout << "Time for extracting data: " << t.get_interval_time() << std::endl
-            //           << std::endl;
             return extracted_data;
         }
 

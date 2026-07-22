@@ -111,7 +111,6 @@ TEST(ObliviousBinTest, ObliviousBinLarge)
         std::shuffle(data.begin(), data.end(), gen);
         ORAM::ObliviousBin<uint32_t, 64> obin(n, n);
         obin.build(data.data());
-        auto &entries = obin.data();
         // for (uint32_t i = 0; i < 100; i++)
         // {
         //     uint32_t cnt = 0;
@@ -139,7 +138,6 @@ TEST(ObliviousBinTest, ObliviousBinLarge)
         std::shuffle(data.begin(), data.end(), gen);
         ORAM::ObliviousBin<uint32_t, 64> obin(n, n);
         obin.build(data.data());
-        auto &entries = obin.data();
         // for (uint32_t i = 0; i < 100; i++)
         // {
         //     uint32_t cnt = 0;

@@ -295,7 +295,6 @@ namespace ORAM
     template <>
     inline void CMOV<int>(const bool cond, int &val1, const int &val2)
     {
-        // UNDONE(): Make this a reinterpret cast?
         //
         CMOV4(cond, (uint32_t &)val1, val2);
     }
@@ -303,7 +302,6 @@ namespace ORAM
     template <>
     inline void CMOV<short>(const bool cond, short &val1, const short &val2)
     {
-        // UNDONE(): Make this a reinterpret cast?
         //
         CMOV2(cond, (uint16_t &)val1, val2);
     }
@@ -312,7 +310,6 @@ namespace ORAM
     inline void CMOV<int8_t>(const bool cond, int8_t &val1,
                              const int8_t &val2)
     {
-        // UNDONE(): Make this a reinterpret cast?
         //
         CMOV1(cond, (uint8_t &)val1, val2);
     }
@@ -335,17 +332,6 @@ namespace ORAM
         if constexpr (sz == 64)
         {
 #if false && defined(__AVX512VL__)
-    /* alternative implementation
-    __m512i vec1_temp, vec2_temp;
-    std::memcpy(&vec1_temp, vec1, 64);
-    std::memcpy(&vec2_temp, vec2, 64);
-    const __m512i& vec1_after_swap =
-        _mm512_mask_blend_epi64(blend_mask, vec1_temp, vec2_temp);
-    const __m512i& vec2_after_swap =
-        _mm512_mask_blend_epi64(blend_mask, vec2_temp, vec1_temp);
-    std::memcpy(vec1, &vec1_after_swap, 64);
-    std::memcpy(vec2, &vec2_after_swap, 64);
-    */
     __m512i vec1_temp, vec2_temp;
     __m512i temp;
     std::memcpy(&vec1_temp, vec1, 64);
@@ -378,18 +364,6 @@ namespace ORAM
             std::memcpy(vec1, &vec1_after_swap, 32);
             std::memcpy(vec2, &vec2_after_swap, 32);
 #elif defined(__AVX2__)
-            /* alternative implementation
-            __m256i vec1_temp, vec2_temp;
-            std::memcpy(&vec1_temp, vec1, 32);
-            std::memcpy(&vec2_temp, vec2, 32);
-            __m256i mask = _mm256_set1_epi8(-cond);
-            const __m256i& vec1_after_swap =
-                _mm256_blendv_epi8(vec1_temp, vec2_temp, mask);
-            const __m256i& vec2_after_swap =
-                _mm256_blendv_epi8(vec2_temp, vec1_temp, mask);
-            std::memcpy(vec1, &vec1_after_swap, 32);
-            std::memcpy(vec2, &vec2_after_swap, 32);
-            */
             __m256i vec1_temp, vec2_temp;
             __m256i temp;
             std::memcpy(&vec1_temp, vec1, 32);

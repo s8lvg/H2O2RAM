@@ -39,7 +39,6 @@ BENCHMARK_DEFINE_F(OLinearScan256, OLinearScan)
 
 static void CustomizedArgsN(benchmark::internal::Benchmark *b)
 {
-    size_t step = 1;
     for (size_t n = 13; n <= 18; n++)
     {
         size_t N = 1 << n;

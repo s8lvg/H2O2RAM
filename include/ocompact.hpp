@@ -339,19 +339,6 @@ namespace ORAM
             }
         }
 
-        // bool overflowed = false;
-        // for (NumTp j = 0; j < n / 4; ++j)
-        //     if (flag_first[j] != 1 || flag_first[n - 1 - j] != 0)
-        //     {
-        //         overflowed = true;
-        //         break;
-        //     }
-        // if (overflowed)
-        // {
-        //     std::cerr << "Compacting " << n << " items failed due to overflow!" << std::endl;
-        //     throw std::runtime_error("Compaction failed due to overflow!");
-        // }
-
         // recursion on the middle half
         if constexpr (std::is_same<size_t, decltype(n)>::value)
         {
@@ -416,7 +403,6 @@ namespace ORAM
         using FlagTp = typename std::iterator_traits<FlagIt>::value_type;
         // cyclically shift each bucket
         const NumTp b = n / Z;
-        // std::cout << "depth: " << depth << "Z: " << Z << std::endl;
         if (b <= 1 || b * sizeof(DataTp) < sysconf(_SC_LEVEL1_DCACHE_SIZE))
         {
             or_compact_power_2(data_first, flag_first, n);

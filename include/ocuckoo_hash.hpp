@@ -77,8 +77,6 @@ namespace ORAM
 
         virtual void build(Block<KeyType, BlockSize> *data)
         {
-            // Timer t;
-            // std::cout << "\thash_bin n: " << n << std::endl;
             prfs.clear();
             bucket_size = 2 * n / prf_cnt;
             for (uint32_t i = 0; i < prf_cnt; i++)
@@ -95,9 +93,7 @@ namespace ORAM
                     edges.emplace_back(i, dest_id);
                 }
             }
-            // std::cout << "\t\tconstructing edge time: " << t.get_interval_time() << std::endl;
             auto matches = omatcher(edges, n, (KeyType)prf_cnt);
-            // std::cout << "\t\tomatching time: " << t.get_interval_time() << std::endl;
             // auto matches = no_match(edges, n, prf_cnt);
             std::vector<std::pair<KeyType, Block<KeyType, BlockSize>>> tmp;
             Block<KeyType, BlockSize> dummy_block;
@@ -108,11 +104,6 @@ namespace ORAM
                 tmp.emplace_back(i, dummy_block);
             osorter(tmp.data(), 3 * n, [](const auto &a, const auto &b)
                     {
-                        // if(a.first!=b.first)
-                        //     return a.first < b.first; 
-                        // if (a.second.dummy() != b.second.dummy())
-                        //     return !a.second.dummy();
-                        // return a.second.id < b.second.id; 
                         bool cond1 = a.first != b.first;
                         bool ret1 = a.first < b.first;
                         bool cond2 = a.second.dummy() != b.second.dummy();
@@ -127,11 +118,6 @@ namespace ORAM
                 CMOV(tmp[i - 1].first == tmp[i].first, tmp[i].first, n_2);
             osorter(tmp.data(), 3 * n, [](const auto &a, const auto &b)
                     {
-                        // if(a.first!=b.first)
-                        //     return a.first < b.first; 
-                        // if (a.second.dummy() != b.second.dummy())
-                        //     return !a.second.dummy();
-                        // return a.second.id < b.second.id; 
                         bool cond1 = a.first != b.first;
                         bool ret1 = a.first < b.first;
                         bool cond2 = a.second.dummy() != b.second.dummy();

@@ -109,7 +109,6 @@ TEST(ObliviousRAMTest, ObliviousRAMHuge1)
     std::random_device rd;
     std::mt19937 gen(rd());
     int test_cases = 5;
-    constexpr int B = 64;
     uint32_t n = MAJOR_BIN_SIZE * EPSILON_INV;
     while (test_cases--)
     {
@@ -131,7 +130,6 @@ TEST(ObliviousRAMTest, ObliviousRAMHuge2)
     std::random_device rd;
     std::mt19937 gen(rd());
     int test_cases = 5;
-    constexpr int B = 64;
     uint32_t n = MAJOR_BIN_SIZE * EPSILON_INV * 4;
     while (test_cases--)
     {
