@@ -3,7 +3,7 @@
 #include <concepts>
 #include "ohash_base.hpp"
 #include "obipartite_matching.hpp"
-#include "oshuffle.hpp"
+#include "osort.hpp"
 #include "prf.hpp"
 
 #include "timer.hpp"

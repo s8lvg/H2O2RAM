@@ -3,7 +3,7 @@
 #include <concepts>
 #include "ohash_base.hpp"
 #include "olinear_scan.hpp"
-#include "oshuffle.hpp"
+#include "osort.hpp"
 
 #include "timer.hpp"
 namespace ORAM

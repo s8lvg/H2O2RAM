@@ -5,7 +5,8 @@
 #include <mutex>
 #include <random>
 #include <vector>
-#include "oshuffle.hpp"
+#include <execution>
+#include "osort.hpp"
 using namespace std;
 
 namespace ORAM

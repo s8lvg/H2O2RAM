@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include <concepts>
-#include "oshuffle.hpp"
+#include "osort.hpp"
 namespace ORAM
 {
 

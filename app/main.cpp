@@ -17,7 +17,7 @@
 #include "ocompact.hpp"
 #include "ohash_tiers.hpp"
 #include "omap.hpp"
-#include "oshuffle.hpp"
+#include "osort.hpp"
 #include "types.hpp"
 #include "timer.hpp"
 #include "hash_planner.hpp"

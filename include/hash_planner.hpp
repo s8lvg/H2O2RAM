@@ -3,11 +3,12 @@
 #include <unistd.h>
 #include <concepts>
 #include <fstream>
+#include <map>
 #include "ocuckoo_hash.hpp"
 #include "ohash_bucket.hpp"
 #include "ohash_tiers.hpp"
 #include "olinear_scan.hpp"
-#include "oshuffle.hpp"
+#include "osort.hpp"
 #include "timer.hpp"
 
 namespace ORAM
