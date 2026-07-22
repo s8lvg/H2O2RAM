@@ -202,11 +202,39 @@ namespace ORAM
     template <typename T>
     inline void CMOV(const bool cond, T &val1, const T &val2)
     {
-        // constant-time conditional move: touch every byte regardless of cond
+        // constant-time conditional move: touch every byte regardless of cond.
+        // Widest available masked blend first, then scalar cmov tails.
         constexpr size_t n = sizeof(T);
         unsigned char *p1 = reinterpret_cast<unsigned char *>(&val1);
         const unsigned char *p2 = reinterpret_cast<const unsigned char *>(&val2);
         size_t i = 0;
+        // Vector blends only pay off once the object is wide enough; below
+        // that the mask setup costs more than a few GPR cmovs.
+        if constexpr (n >= 64)
+        {
+#if defined(__AVX512F__)
+            const __mmask8 m512 = (__mmask8)(-(int)cond); // 0x00 or 0xff, branchless
+            for (; i + 64 <= n; i += 64)
+            {
+                __m512i a, b;
+                std::memcpy(&a, p1 + i, 64);
+                std::memcpy(&b, p2 + i, 64);
+                const __m512i r = _mm512_mask_blend_epi64(m512, a, b);
+                std::memcpy(p1 + i, &r, 64);
+            }
+#endif
+#if defined(__AVX2__)
+            const __m256i m256 = _mm256_set1_epi8((char)-(int)cond);
+            for (; i + 32 <= n; i += 32)
+            {
+                __m256i a, b;
+                std::memcpy(&a, p1 + i, 32);
+                std::memcpy(&b, p2 + i, 32);
+                const __m256i r = _mm256_blendv_epi8(a, b, m256);
+                std::memcpy(p1 + i, &r, 32);
+            }
+#endif
+        }
         for (; i + 8 <= n; i += 8)
         {
             uint64_t a, b;
